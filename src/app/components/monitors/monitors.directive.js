@@ -20,7 +20,7 @@
     return directive;
 
     /** @ngInject */
-    function MonitorsController($log, monitorService) {
+    function MonitorsController($log, monitorService, $timeout) {
       var vm = this;
 
       vm.monitors = [];
@@ -34,9 +34,12 @@
       }
 
       function getMonitors() {
+        $log.info('Refreshing Monitors View');
         return monitorService.getMonitors().then(function(data) {
           vm.monitors = data;
-          $log.info('Monitors', vm.monitors);
+          $timeout(function() {
+            getMonitors();
+          },30000)
           return vm.monitors;
         });
       }
